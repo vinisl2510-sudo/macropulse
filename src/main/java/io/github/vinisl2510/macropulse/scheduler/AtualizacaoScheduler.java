@@ -2,6 +2,7 @@ package io.github.vinisl2510.macropulse.scheduler;
 
 import io.github.vinisl2510.macropulse.service.AtualizacaoService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,8 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class AtualizacaoScheduler {
-    private final AtualizacaoService atualizacaoService;
 
+    @Value("${macropulse.atualizacao.na-inicializacao:true}")
+    private boolean atualizacaoInicialLigada;
+    private final AtualizacaoService atualizacaoService;
     public AtualizacaoScheduler(AtualizacaoService atualizacaoService) {
         this.atualizacaoService = atualizacaoService;
     }
@@ -30,6 +33,10 @@ public class AtualizacaoScheduler {
 
     @EventListener(ApplicationReadyEvent.class)
     public void atualizarNaInicializacao(){
+        if (!atualizacaoInicialLigada) {
+            log.info("Atualização na inicialização desligada por configuração");
+            return;
+        }
         log.info( "Aplicação iniciada: buscando os dias que faltam" );
         try {
             atualizacaoService.atualizarTudo();
