@@ -42,7 +42,7 @@ public class AtualizacaoService {
 
     public void atualizarSelic() {
         LocalDate inicio = repository.findTopByTipoOrderByDataDesc(TipoIndicador.SELIC)
-                .map(ultimo -> ultimo.getData().plusDays(1))
+                .map(selic -> selic.getData().plusDays(1))
                 .orElse(LocalDate.now().minusYears(2));
         LocalDate hoje = LocalDate.now();
         if(inicio.isAfter(hoje)){
@@ -159,6 +159,31 @@ public class AtualizacaoService {
 
     }
 
+    public void atualizarIpca() {
+        LocalDate inicio = repository.findTopByTipoOrderByDataDesc(TipoIndicador.IPCA)
+                .map(ipca -> ipca.getData())
+                .orElse(LocalDate.now().minusYears(2));
+        LocalDate hoje = LocalDate.now();
+        if (inicio.isAfter(hoje)) {
+            return;
+        }
+        List<SelicBcbDTO> resposta = client.buscarSeriePorPeriodo(433, inicio, hoje);
+        List<Indicador> novos = new ArrayList<>();
+        for (SelicBcbDTO dto : resposta) {
+            LocalDate data = LocalDate.parse(dto.data(), FORMATO_SGS);
+            if (data.isAfter(hoje) || repository.existsByDataAndTipo(data, TipoIndicador.IPCA)) {
+                continue;
+            }
+            BigDecimal valor = new BigDecimal(dto.valor());
+            Indicador indicador = new Indicador(TipoIndicador.IPCA, data, valor);
+
+            novos.add(indicador);
+
+        }
+
+        repository.saveAll(novos);
+    }
+
     @CacheEvict(value = {"selicAtual",
             "selicHistorico",
             "dolarAtual",
@@ -172,6 +197,7 @@ public class AtualizacaoService {
         atualizarDolar();
         atualizarIpcaEsperado();
         atualizarEuro();
+        atualizarIpca();
     }
 
 }

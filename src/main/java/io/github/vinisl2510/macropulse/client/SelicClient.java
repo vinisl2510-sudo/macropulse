@@ -33,4 +33,17 @@ public class SelicClient {
             throw new BcbIndisponivelException("Não foi possível consultar a Selic no Banco Central", e);
         }
     }
+
+    public List<SelicBcbDTO> buscarSeriePorPeriodo(int serie, LocalDate inicio, LocalDate fim){
+        try{
+        return restClient.get()
+                .uri("https://api.bcb.gov.br/dados/serie/bcdata.sgs.{serie}/dados?formato=json&dataInicial={inicio}&dataFinal={fim}"
+                        , serie, DATA.format(inicio), DATA.format(fim))
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<SelicBcbDTO>>() {
+                });
+    } catch (RestClientException e) {
+        throw new BcbIndisponivelException("Não foi possível consultar a série " + serie + " do SGS", e);
+        }
+    }
 }

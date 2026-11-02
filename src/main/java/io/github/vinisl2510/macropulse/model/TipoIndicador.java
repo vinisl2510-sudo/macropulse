@@ -4,5 +4,6 @@ public enum TipoIndicador {
     SELIC,
     DOLAR,
     IPCA_ESPERADO_12M,
-    EURO
+    EURO,
+    IPCA
 }
