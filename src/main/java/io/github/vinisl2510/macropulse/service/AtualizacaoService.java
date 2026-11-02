@@ -190,6 +190,7 @@ public class AtualizacaoService {
             "dolarHistorico",
             "euroAtual",
             "euroHistorico",
+            "ipcaHistorico",
             "juroReal",
             "dolarVariacao"}, allEntries = true)
     public void atualizarTudo(){

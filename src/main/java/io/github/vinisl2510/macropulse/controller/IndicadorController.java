@@ -54,6 +54,12 @@ public class IndicadorController {
         return indicadorQueryService.euroHistorico(inicio, fim);
     }
 
+    @GetMapping("/ipca/historico")
+    public List<CotacaoDTO> ipcaHistorico(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+                                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim){
+        return indicadorQueryService.ipcaHistorico(inicio, fim);
+    }
+
     @GetMapping("/dolar/variacao")
     public VariacaoDTO dolarVariacao(@RequestParam(defaultValue = "30") @Min(1) int dias) {
         return indicadorQueryService.dolarVariacao(dias);

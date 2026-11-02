@@ -69,6 +69,15 @@ public class IndicadorQueryService {
                 .toList();
     }
 
+    @Cacheable("ipcaHistorico")
+    public List<CotacaoDTO> ipcaHistorico(LocalDate inicio, LocalDate fim) {
+        return indicadorRepository.findByTipoAndDataBetweenOrderByDataAsc(TipoIndicador.IPCA, inicio, fim)
+                .stream()
+                .map(ipca -> new CotacaoDTO(ipca.getData(), ipca.getValor()))
+                .toList();
+    }
+
+
     @Cacheable("dolarVariacao")
     public VariacaoDTO dolarVariacao(int dias){
         Indicador ultimo = indicadorRepository.findTopByTipoOrderByDataDesc(TipoIndicador.DOLAR)
