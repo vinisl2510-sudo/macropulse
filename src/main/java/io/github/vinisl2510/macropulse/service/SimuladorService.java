@@ -58,7 +58,7 @@ public class SimuladorService {
                 List.of(cdb, tesouro, poupanca));
     }
 
-    private BigDecimal aliquotaIr(int dias) {
+     BigDecimal aliquotaIr(int dias) {
         if (dias <= 180) {
             return new BigDecimal("22.5");
         }
