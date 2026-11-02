@@ -7,9 +7,11 @@ import io.github.vinisl2510.macropulse.dto.bcb.FocusBcbDTO;
 import io.github.vinisl2510.macropulse.dto.bcb.PtaxBcbDTO;
 import io.github.vinisl2510.macropulse.dto.bcb.PtaxRespostaBcbDTO;
 import io.github.vinisl2510.macropulse.dto.bcb.SelicBcbDTO;
+import io.github.vinisl2510.macropulse.exception.BcbIndisponivelException;
 import io.github.vinisl2510.macropulse.model.Indicador;
 import io.github.vinisl2510.macropulse.model.TipoIndicador;
 import io.github.vinisl2510.macropulse.repository.IndicadorRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class AtualizacaoService {
     private final IndicadorRepository repository;
@@ -42,7 +45,7 @@ public class AtualizacaoService {
 
     public void atualizarSelic() {
         LocalDate inicio = repository.findTopByTipoOrderByDataDesc(TipoIndicador.SELIC)
-                .map(ultimo -> ultimo.getData().plusDays(1))
+                .map(selic -> selic.getData().plusDays(1))
                 .orElse(LocalDate.now().minusYears(2));
         LocalDate hoje = LocalDate.now();
         if(inicio.isAfter(hoje)){
@@ -127,10 +130,99 @@ public class AtualizacaoService {
         repository.saveAll(novosIPCA);
     }
 
-    @CacheEvict(value = {"selicAtual", "selicHistorico", "dolarAtual", "dolarHistorico"}, allEntries = true)
-    public void atualizarTudo(){
-        atualizarSelic();
-        atualizarDolar();
-        atualizarIpcaEsperado();
+    public void atualizarEuro(){
+        LocalDate inicio = repository.findTopByTipoOrderByDataDesc(TipoIndicador.EURO)
+                .map(ultimo -> ultimo.getData().plusDays(1))
+                .orElse(LocalDate.now().minusYears(2));
+        LocalDate hoje = LocalDate.now();
+        if (inicio.isAfter(hoje)){
+            return;
+        }
+
+        List<PtaxBcbDTO> resposta = clientPtax.buscarMoedaPeriodo("EUR",inicio, hoje);
+        List<Indicador> novosPtax = new ArrayList<>();
+        Set<LocalDate> datasAdicionadas = new HashSet<>();
+
+
+        for (PtaxBcbDTO dto : resposta){
+            String textoData = dto.dataHoraCotacao().substring( 0, 10 );
+            LocalDate data = LocalDate.parse(textoData);
+        if (data.isAfter(hoje) || repository.existsByDataAndTipo(data, TipoIndicador.EURO)){
+                continue;
+            }
+        Indicador indicador = new Indicador(TipoIndicador.EURO, data, dto.cotacaoVenda());
+            if (datasAdicionadas.contains(data)){
+                continue;
+            }else{
+                datasAdicionadas.add(data);
+            }
+            novosPtax.add(indicador);
+        }
+        repository.saveAll(novosPtax);
+
     }
+
+    public void atualizarIpca() {
+        LocalDate inicio = repository.findTopByTipoOrderByDataDesc(TipoIndicador.IPCA)
+                .map(ipca -> ipca.getData())
+                .orElse(LocalDate.now().minusYears(2));
+        LocalDate hoje = LocalDate.now();
+        if (inicio.isAfter(hoje)) {
+            return;
+        }
+        List<SelicBcbDTO> resposta = client.buscarSeriePorPeriodo(433, inicio, hoje);
+        List<Indicador> novos = new ArrayList<>();
+        for (SelicBcbDTO dto : resposta) {
+            LocalDate data = LocalDate.parse(dto.data(), FORMATO_SGS);
+            if (data.isAfter(hoje) || repository.existsByDataAndTipo(data, TipoIndicador.IPCA)) {
+                continue;
+            }
+            BigDecimal valor = new BigDecimal(dto.valor());
+            Indicador indicador = new Indicador(TipoIndicador.IPCA, data, valor);
+
+            novos.add(indicador);
+
+        }
+
+        repository.saveAll(novos);
+    }
+
+    @CacheEvict(value = {"selicAtual",
+            "selicHistorico",
+            "dolarAtual",
+            "dolarHistorico",
+            "euroAtual",
+            "euroHistorico",
+            "ipcaHistorico",
+            "juroReal",
+            "dolarVariacao"}, allEntries = true)
+    public void atualizarTudo(){
+        try {
+            atualizarSelic();
+        } catch (BcbIndisponivelException e) {
+            log.error("Falha ao atualizar a Selic", e);
+        }
+        try {
+            atualizarDolar();
+        } catch (BcbIndisponivelException e) {
+            log.error("Falha ao atualizar o Dólar", e);
+        }
+        try {
+            atualizarIpcaEsperado();
+        } catch (BcbIndisponivelException e) {
+            log.error("Falha ao atualizar o Ipca esperado", e);
+        }
+        try {
+            atualizarEuro();
+        } catch (BcbIndisponivelException e) {
+            log.error("Falha ao atualizar o Euro", e);
+        }
+        try {
+            atualizarIpca();
+        } catch (BcbIndisponivelException e) {
+            log.error("Falha ao atualizar o Ipca", e);
+        }
+        
+    }
+
 }
