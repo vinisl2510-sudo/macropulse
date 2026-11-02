@@ -5,6 +5,7 @@ import io.github.vinisl2510.macropulse.dto.bcb.PtaxRespostaBcbDTO;
 import io.github.vinisl2510.macropulse.dto.bcb.SelicBcbDTO;
 import io.github.vinisl2510.macropulse.exception.BcbIndisponivelException;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -23,6 +24,7 @@ public class PtaxClient {
         this.restClient = restClient;
     }
 
+    @Retryable(includes = BcbIndisponivelException.class, maxRetries = 3, delay = 2000)
     public List<PtaxBcbDTO> cotacaoDolarPeriodo (LocalDate inicio, LocalDate fim) {
         try {
             PtaxRespostaBcbDTO resposta = restClient.get()
@@ -40,6 +42,7 @@ public class PtaxClient {
         }
     }
 
+    @Retryable(includes = BcbIndisponivelException.class, maxRetries = 3, delay = 2000)
     public List<PtaxBcbDTO> buscarMoedaPeriodo (String moeda, LocalDate inicio, LocalDate fim) {
         try {
             PtaxRespostaBcbDTO resposta = restClient.get()

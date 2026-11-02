@@ -7,9 +7,11 @@ import io.github.vinisl2510.macropulse.dto.bcb.FocusBcbDTO;
 import io.github.vinisl2510.macropulse.dto.bcb.PtaxBcbDTO;
 import io.github.vinisl2510.macropulse.dto.bcb.PtaxRespostaBcbDTO;
 import io.github.vinisl2510.macropulse.dto.bcb.SelicBcbDTO;
+import io.github.vinisl2510.macropulse.exception.BcbIndisponivelException;
 import io.github.vinisl2510.macropulse.model.Indicador;
 import io.github.vinisl2510.macropulse.model.TipoIndicador;
 import io.github.vinisl2510.macropulse.repository.IndicadorRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class AtualizacaoService {
     private final IndicadorRepository repository;
@@ -194,11 +197,32 @@ public class AtualizacaoService {
             "juroReal",
             "dolarVariacao"}, allEntries = true)
     public void atualizarTudo(){
-        atualizarSelic();
-        atualizarDolar();
-        atualizarIpcaEsperado();
-        atualizarEuro();
-        atualizarIpca();
+        try {
+            atualizarSelic();
+        } catch (BcbIndisponivelException e) {
+            log.error("Falha ao atualizar a Selic", e);
+        }
+        try {
+            atualizarDolar();
+        } catch (BcbIndisponivelException e) {
+            log.error("Falha ao atualizar o Dólar", e);
+        }
+        try {
+            atualizarIpcaEsperado();
+        } catch (BcbIndisponivelException e) {
+            log.error("Falha ao atualizar o Ipca esperado", e);
+        }
+        try {
+            atualizarEuro();
+        } catch (BcbIndisponivelException e) {
+            log.error("Falha ao atualizar o Euro", e);
+        }
+        try {
+            atualizarIpca();
+        } catch (BcbIndisponivelException e) {
+            log.error("Falha ao atualizar o Ipca", e);
+        }
+        
     }
 
 }
