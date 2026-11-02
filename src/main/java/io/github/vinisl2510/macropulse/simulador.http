@@ -1,0 +1,7 @@
+POST http://localhost:8081/api/simulador
+Content-Type: application/json
+
+{
+  "valor": -5,
+  "percentualCdi": 110
+}
