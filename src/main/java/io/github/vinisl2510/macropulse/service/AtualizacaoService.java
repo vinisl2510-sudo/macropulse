@@ -127,10 +127,51 @@ public class AtualizacaoService {
         repository.saveAll(novosIPCA);
     }
 
-    @CacheEvict(value = {"selicAtual", "selicHistorico", "dolarAtual", "dolarHistorico"}, allEntries = true)
+    public void atualizarEuro(){
+        LocalDate inicio = repository.findTopByTipoOrderByDataDesc(TipoIndicador.EURO)
+                .map(ultimo -> ultimo.getData().plusDays(1))
+                .orElse(LocalDate.now().minusYears(2));
+        LocalDate hoje = LocalDate.now();
+        if (inicio.isAfter(hoje)){
+            return;
+        }
+
+        List<PtaxBcbDTO> resposta = clientPtax.buscarMoedaPeriodo("EUR",inicio, hoje);
+        List<Indicador> novosPtax = new ArrayList<>();
+        Set<LocalDate> datasAdicionadas = new HashSet<>();
+
+
+        for (PtaxBcbDTO dto : resposta){
+            String textoData = dto.dataHoraCotacao().substring( 0, 10 );
+            LocalDate data = LocalDate.parse(textoData);
+        if (data.isAfter(hoje) || repository.existsByDataAndTipo(data, TipoIndicador.EURO)){
+                continue;
+            }
+        Indicador indicador = new Indicador(TipoIndicador.EURO, data, dto.cotacaoVenda());
+            if (datasAdicionadas.contains(data)){
+                continue;
+            }else{
+                datasAdicionadas.add(data);
+            }
+            novosPtax.add(indicador);
+        }
+        repository.saveAll(novosPtax);
+
+    }
+
+    @CacheEvict(value = {"selicAtual",
+            "selicHistorico",
+            "dolarAtual",
+            "dolarHistorico",
+            "euroAtual",
+            "euroHistorico",
+            "juroReal",
+            "dolarVariacao"}, allEntries = true)
     public void atualizarTudo(){
         atualizarSelic();
         atualizarDolar();
         atualizarIpcaEsperado();
+        atualizarEuro();
     }
+
 }

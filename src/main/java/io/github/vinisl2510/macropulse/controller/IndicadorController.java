@@ -33,6 +33,9 @@ public class IndicadorController {
         return indicadorQueryService.dolarAtual();
     }
 
+    @GetMapping("/euro/atual")
+    public CotacaoDTO euroAtual(){return indicadorQueryService.euroAtual();}
+
     @GetMapping("/selic/historico")
     public List<CotacaoDTO> selicHistorico(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim){
@@ -45,6 +48,12 @@ public class IndicadorController {
         return indicadorQueryService.dolarHistorico(inicio, fim);
     }
 
+    @GetMapping("/euro/historico")
+    public List<CotacaoDTO> euroHistorico(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+                                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim){
+        return indicadorQueryService.euroHistorico(inicio, fim);
+    }
+
     @GetMapping("/dolar/variacao")
     public VariacaoDTO dolarVariacao(@RequestParam(defaultValue = "30") @Min(1) int dias) {
         return indicadorQueryService.dolarVariacao(dias);
@@ -54,5 +63,6 @@ public class IndicadorController {
     public JuroRealDTO juroReal() {
         return indicadorQueryService.juroReal();
     }
+
 
 }

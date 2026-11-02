@@ -40,4 +40,20 @@ public class PtaxClient {
         }
     }
 
+    public List<PtaxBcbDTO> buscarMoedaPeriodo (String moeda, LocalDate inicio, LocalDate fim) {
+        try {
+            PtaxRespostaBcbDTO resposta = restClient.get()
+                    .uri("https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoMoedaPeriodo(moeda=@moeda,dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@moeda='{moeda}'&@dataInicial='{inicio}'&@dataFinalCotacao='{fim}'&$filter=tipoBoletim eq 'Fechamento'&$format=json"
+                            ,moeda , DATA.format(inicio), DATA.format(fim))
+                    .retrieve()
+                    .body(PtaxRespostaBcbDTO.class);
+            if (resposta == null){
+                return List.of();
+            }
+
+            return resposta.value();
+        }catch (RestClientException e){
+            throw new BcbIndisponivelException("Não foi possível consultar a cotação de " + moeda + " no Banco Central", e);        }
+    }
+
     }

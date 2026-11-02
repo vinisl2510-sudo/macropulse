@@ -3,7 +3,6 @@ package io.github.vinisl2510.macropulse.service;
 import io.github.vinisl2510.macropulse.dto.response.CotacaoDTO;
 import io.github.vinisl2510.macropulse.dto.response.JuroRealDTO;
 import io.github.vinisl2510.macropulse.dto.response.VariacaoDTO;
-import io.github.vinisl2510.macropulse.exception.BcbIndisponivelException;
 import io.github.vinisl2510.macropulse.exception.DadosNaoEncontradosException;
 import io.github.vinisl2510.macropulse.model.Indicador;
 import io.github.vinisl2510.macropulse.model.TipoIndicador;
@@ -39,6 +38,13 @@ public class IndicadorQueryService {
                 .orElseThrow(() -> new DadosNaoEncontradosException("Nenhum valor da dolar encontrado"));
     }
 
+    @Cacheable("euroAtual")
+    public CotacaoDTO euroAtual(){
+        return indicadorRepository.findTopByTipoOrderByDataDesc(TipoIndicador.EURO)
+                .map(ultimo -> new CotacaoDTO(ultimo.getData(), ultimo.getValor()))
+                .orElseThrow(() -> new DadosNaoEncontradosException("Nenhum valor da euro encontrado"));
+    }
+
     @Cacheable("selicHistorico")
     public List<CotacaoDTO> selicHistorico(LocalDate inicio, LocalDate fim) {
         return indicadorRepository.findByTipoAndDataBetweenOrderByDataAsc(TipoIndicador.SELIC, inicio, fim)
@@ -52,6 +58,14 @@ public class IndicadorQueryService {
         return indicadorRepository.findByTipoAndDataBetweenOrderByDataAsc(TipoIndicador.DOLAR, inicio, fim)
                 .stream()
                 .map(dolar -> new CotacaoDTO(dolar.getData(), dolar.getValor()))
+                .toList();
+    }
+
+    @Cacheable("euroHistorico")
+    public List<CotacaoDTO> euroHistorico(LocalDate inicio, LocalDate fim){
+        return indicadorRepository.findByTipoAndDataBetweenOrderByDataAsc(TipoIndicador.EURO, inicio, fim)
+                .stream()
+                .map(euro -> new CotacaoDTO(euro.getData(), euro.getValor()))
                 .toList();
     }
 
