@@ -17,7 +17,7 @@ services:
       retries: 10
 
   api:
-    build: .
+    build: ./back/macropulse
     container_name: macropulse-api
     ports:
       - "8081:8081"
