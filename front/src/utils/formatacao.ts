@@ -22,7 +22,11 @@ const data = new Intl.DateTimeFormat('pt-BR', {
   timeZone: 'UTC',
 })
 
+const diaMes = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit', timeZone: 'UTC' })
+
 const mesAno = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: '2-digit', timeZone: 'UTC' })
+
+const mesAnoLongo = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric', timeZone: 'UTC' })
 
 /**
  * Converte "yyyy-MM-dd" em Date sempre em UTC, e os formatadores acima também
@@ -57,7 +61,23 @@ export function formatarData(dataIso: string): string {
   return data.format(paraDataUtc(dataIso))
 }
 
-/** Mês e ano, para o eixo de gráficos mensais: nov. de 26 */
+/** Número simples com 2 casas: 0,25 */
+export function formatarNumero(valor: number): string {
+  return numeroDuasCasas.format(valor)
+}
+
+/** Dia e mês, para o eixo de períodos curtos: 04/11 */
+export function formatarDiaMes(dataIso: string): string {
+  return diaMes.format(paraDataUtc(dataIso))
+}
+
+/** Mês e ano curtos, para o eixo de períodos longos: nov/26 */
 export function formatarMesAno(dataIso: string): string {
-  return mesAno.format(paraDataUtc(dataIso))
+  // O Intl devolve "nov. de 26"
+  return mesAno.format(paraDataUtc(dataIso)).replace(/\.? de /, '/')
+}
+
+/** Mês por extenso, para indicadores mensais: setembro de 2026 */
+export function formatarMesAnoLongo(dataIso: string): string {
+  return mesAnoLongo.format(paraDataUtc(dataIso))
 }

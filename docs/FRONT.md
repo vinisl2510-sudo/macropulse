@@ -108,7 +108,49 @@ Todo lugar que busca dados tem três estados, e `useDados` entrega qual é o atu
 Dois cuidados importantes:
 
 - **Cancelamento:** ao trocar de período ou sair da tela, o pedido em andamento é cancelado com `AbortController`. Sem isso, uma resposta atrasada poderia sobrescrever a mais recente.
-- **"Carregando" é calculado:** cada resultado guarda a chave do pedido que o gerou. Se a chave atual é outra, o estado é "carregando". Assim, os dados do período anterior nunca aparecem por um instante após a troca.
+- **"Carregando" é calculado:** cada resultado guarda a chave do pedido que o gerou. Se a chave atual é outra, o estado é "carregando". Os dados antigos só ficam disponíveis em `dadosAnteriores`, e os gráficos os mostram esmaecidos durante a espera, para a tela não pular nem piscar.
+
+## Como cada página funciona
+
+### Painel (`/`)
+
+**Cards de indicadores** (`CartoesIndicadores.tsx`): cada card busca os próprios dados, então a falha de um não derruba os outros.
+
+| Card | Endpoints | Com o que a seta compara |
+| --- | --- | --- |
+| Dólar | `/dolar/atual`, `/dolar/historico`, `/dolar/variacao?dias=30` | Dia útil anterior (variação em %) |
+| Euro | `/euro/atual`, `/euro/historico` | Dia útil anterior (variação em %) |
+| Selic | `/selic/atual`, `/selic/historico` | Último valor **diferente** (diferença em p.p.) |
+| IPCA | `/ipca/historico` | Mês anterior (diferença em p.p.) |
+| IPCA esperado | `/juro-real` | Sem seta |
+| Juro real | `/juro-real` | Sem seta |
+
+- **Por que a Selic compara com o último valor diferente:** ela é publicada todo dia e fica igual por semanas. Comparar com a véspera diria sempre "sem variação". O card mostra, por exemplo, "Queda de 0,25 p.p., em vigor desde 17/09/2026".
+- **Por que o IPCA não tem endpoint "atual":** o valor é o último item do histórico.
+- **Por que dois cards não têm seta:** a API não oferece histórico do IPCA esperado nem do juro real, então não existe um valor anterior verdadeiro. Inventar uma comparação seria pior do que não mostrar. Para ter a seta, seria preciso um novo endpoint no backend.
+- **Taxas em p.p., preços em %:** se a Selic vai de 14% para 13,75%, a queda é de 0,25 ponto percentual. Dizer "1,79%" confundiria.
+- **Alta e queda não dependem só da cor:** há seta e texto, com contraste verificado nos dois temas.
+
+**Gráficos** (`PainelGraficos.tsx` e `GraficoHistorico.tsx`): um único seletor 1M / 6M / 1A / 2A vale para os quatro gráficos, para os números sempre se referirem ao mesmo período.
+
+| Gráfico | Forma | Por quê |
+| --- | --- | --- |
+| Selic | Linha em escada | A taxa fica igual e muda de uma vez, sem transição |
+| Dólar e euro | Linha | Variação contínua, dia a dia |
+| IPCA | Barras | Cada mês é um valor separado, e pode ser negativo |
+
+- **IPCA em 1M:** o último dado costuma ter mais de um mês, então o intervalo viria vazio. Nesse período, o gráfico mostra os 3 últimos meses divulgados, com uma nota explicando.
+- **Data "de hoje" local:** `paraIso` usa o dia local, porque `toISOString()` usa UTC e, às 22h no Brasil, já seria o dia seguinte.
+- **Sem área pintada nas linhas:** o eixo não começa em zero, e a área sugeriria um tamanho que não existe. Nas barras o eixo começa em zero, como deve ser.
+- **Tabela em cada gráfico:** o canvas é só uma imagem para leitores de tela. Por isso há uma descrição (`aria-label`) e a opção "Ver dados em tabela", cujas linhas só são criadas ao abrir.
+
+**Seção "O que a API faz"** (`SecaoApi.tsx`): lista funcionalidades e endpoints, com o botão para o Swagger.
+
+### Cores dos gráficos nos dois temas
+
+O canvas do Chart.js não entende variáveis CSS. O hook `useCoresGrafico` lê os valores do CSS e é refeito quando o tema muda, redesenhando os gráficos. Por isso, `ProvedorTema` muda o atributo `data-tema` **antes** de atualizar o estado do React: quando o gráfico renderiza, as cores novas já estão valendo.
+
+As cores das séries foram validadas com um script que simula daltonismo e mede o contraste. Cada tema tem tons próprios, pois o tom que funciona no fundo branco não é o mesmo que funciona no escuro.
 
 ## Tema claro e escuro
 
@@ -161,5 +203,8 @@ O visual usa **CSS próprio**, sem Tailwind nem bibliotecas de componentes, para
 ## Problemas encontrados e como foram resolvidos
 
 - **Botão hambúrguer aparecendo no computador:** `.botao-icone` vem depois no CSS e sobrescrevia o `display: none` do hambúrguer. Solução: usar duas classes no seletor (`.botao-icone.cabecalho__hamburguer`), que têm prioridade maior.
+- **"A API respondeu em um formato inesperado" em todos os cards:** o servidor do Vite estava ligado durante uma troca de branch. A pasta `front/` sumiu por um instante, e o processo continuou rodando sem a configuração do proxy, devolvendo o HTML do site no lugar do JSON. Salvar o `vite.config.ts` de novo não resolveu, porque o processo também parou de perceber as mudanças. **Solução: parar com `Ctrl+C` e rodar `npm run dev` de novo.** Para evitar, pare o servidor antes de trocar para uma branch sem a pasta `front/`.
+- **Área pintada enganosa nos gráficos de linha:** com o eixo começando em R$ 4,50, a área sugeria uma grandeza que não existe. Solução: deixar só a linha.
+- **Gráfico que não encolhia com a janela:** a coluna do CSS Grid não fica menor que o conteúdo por padrão. Solução: usar `minmax(0, 1fr)` nas colunas.
 - **Porta 5173 ocupada:** outro projeto pode estar usando a porta. O Vite escolhe a próxima livre e mostra o endereço no terminal; o proxy continua funcionando normalmente.
 - **`node_modules` dentro do OneDrive:** a pasta tem milhares de arquivos e deixa a sincronização lenta. Ela não vai para o Git, mas o OneDrive tenta sincronizá-la. Se atrapalhar, pause a sincronização enquanto trabalha ou mantenha o projeto fora do OneDrive.
