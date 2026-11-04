@@ -3,6 +3,13 @@
 
 const moeda = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
 
+const moedaCompacta = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+  notation: 'compact',
+  maximumFractionDigits: 1,
+})
+
 const cotacao = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
   currency: 'BRL',
@@ -41,6 +48,11 @@ function paraDataUtc(dataIso: string): Date {
 /** Valores em reais: R$ 1.234,56 */
 export function formatarMoeda(valor: number): string {
   return moeda.format(valor)
+}
+
+/** Valores em eixo de gráfico: R$ 10 mil */
+export function formatarMoedaCompacta(valor: number): string {
+  return moedaCompacta.format(valor)
 }
 
 /** Dólar e euro, com 4 casas: R$ 5,4935 */
