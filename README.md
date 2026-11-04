@@ -1,16 +1,37 @@
 # 📈 MacroPulse
 
-API REST de **indicadores macroeconômicos do Brasil**. Coleta diariamente dados oficiais do **Banco Central** (Selic, dólar, euro, IPCA e expectativa de inflação), guarda o histórico no PostgreSQL, calcula **juro real** e **variação cambial**, e oferece um **simulador de investimentos** (CDB, Tesouro Selic e poupança) com IR regressivo.
+API REST e site de **indicadores macroeconômicos do Brasil**. Coleta diariamente dados oficiais do **Banco Central** (Selic, dólar, euro, IPCA e expectativa de inflação), guarda o histórico no PostgreSQL, calcula **juro real** e **variação cambial**, e oferece um **simulador de investimentos** (CDB, Tesouro Selic e poupança) com IR regressivo. Tudo isso aparece em um **painel com cards e gráficos**, feito em React.
 
 ![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.2-6DB33F?logo=springboot)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-compose-2496ED?logo=docker)
 ![Testes](https://img.shields.io/badge/testes-17%20passando-brightgreen)
 
 ---
 
+## 🖼️ Telas
+
+<!-- Coloque aqui os prints do site. Sugestão: salve as imagens em docs/imagens/ e use: -->
+<!-- ![Painel](docs/imagens/painel.png) -->
+<!-- ![Simulador](docs/imagens/simulador.png) -->
+
+_Prints em breve._
+
+---
+
 ## ✨ Funcionalidades
+
+**Site**
+
+- **Painel** com cards de dólar, euro, Selic, IPCA, IPCA esperado e juro real, com seta de alta ou queda.
+- **Gráficos históricos** com seletor de período (1M, 6M, 1A e 2A).
+- **Simulador** com escolha dos investimentos a comparar e gráfico de barras.
+- **Tema claro e escuro** e layout responsivo.
+
+**API**
 
 - **Coleta automática** dos indicadores do Banco Central todo dia útil às 18h (horário de Brasília) e na inicialização da aplicação, buscando só os dias que faltam.
 - **Cotações atuais e históricas** de Selic, dólar, euro e IPCA.
@@ -37,6 +58,15 @@ API REST de **indicadores macroeconômicos do Brasil**. Coleta diariamente dados
 ---
 
 ## 🛠️ Stack
+
+**Front-end**
+
+- **React 19**, **Vite** e **TypeScript**
+- **React Router** (páginas) e **Chart.js** + **react-chartjs-2** (gráficos)
+- **CSS próprio** com variáveis, sem bibliotecas de componentes
+- **Nginx** para servir o site e fazer o proxy reverso
+
+**Backend**
 
 - **Java 21** e **Spring Boot 4.1.2** (Spring Framework 7)
 - **Spring Web MVC** + **RestClient** (consumo das APIs do BCB)
@@ -65,8 +95,11 @@ flowchart LR
     end
     CLI --> BCB
     REPO --> PG[(PostgreSQL)]
-    USER[Cliente / Front] --> CTRL
+    USER[Navegador] --> WEB[Nginx<br/>site React + proxy /api]
+    WEB --> CTRL
 ```
+
+- **O site nunca chama o Banco Central:** ele consome só a API Java, por caminhos relativos e sem necessidade de CORS.
 
 - **Escrita e leitura separadas**: o `AtualizacaoService` busca e grava; o `IndicadorQueryService` só lê (com cache).
 - Uma tabela `indicador` com `tipo`, `data` e `valor`, e uma constraint `UNIQUE (tipo, data)` que impede registros duplicados.
@@ -85,12 +118,26 @@ cd macropulse
 docker compose up --build
 ```
 
-Sobem dois containers: `macropulse-db` (PostgreSQL) e `macropulse-api`. A API só inicia depois que o banco está pronto (healthcheck) e, ao subir, já busca os dados no Banco Central.
+Sobem três containers: `macropulse-db` (PostgreSQL), `macropulse-api` e `macropulse-web` (site). A API só inicia depois que o banco está pronto (healthcheck) e, ao subir, já busca os dados no Banco Central.
 
+- Site: **`http://localhost:3000`**
 - API: `http://localhost:8081`
-- Swagger: **`http://localhost:8081/swagger-ui.html`**
+- Swagger: **`http://localhost:8081/swagger-ui.html`** (ou pelo botão "Documentação da API" do site)
 
-### Opção 2: desenvolvimento (banco no Docker, API local)
+### Opção 2: desenvolver o front
+
+Pré-requisitos: **Node 20 ou superior** e **Docker**.
+
+```bash
+docker compose up -d db api    # na raiz do repositório
+cd front
+npm install
+npm run dev
+```
+
+O site abre em `http://localhost:5173` e atualiza sozinho ao salvar um arquivo. O proxy do Vite repassa as chamadas para a API na porta 8081.
+
+### Opção 3: desenvolver a API
 
 Pré-requisitos: **Java 21** e **Docker**.
 
@@ -213,11 +260,24 @@ O repositório é um **monorepo**: backend e front-end ficam juntos, cada um na 
 
 ```
 macropulse/
-├── docker-compose.yml     # sobe o banco e a API
+├── docker-compose.yml     # sobe o banco, a API e o site
 ├── README.md
-├── docs/                  # documentação didática
-├── front/                 # front-end
+├── docs/                  # documentação didática (monorepo, front e Docker)
+├── front/                 # site em React (src, Dockerfile, nginx.conf)
 └── back/macropulse/       # API Java (src, pom.xml, mvnw, Dockerfile)
+```
+
+Código do site, dentro de `front`:
+
+```
+src
+├── api          # funções que chamam a API e tratam os erros
+├── components   # peças visuais (cabeçalho, cards, gráficos, estados)
+├── hooks        # busca de dados, tema e cores dos gráficos
+├── pages        # Painel, Simulador, Sobre, Sugestões e 404
+├── styles       # CSS próprio com variáveis
+├── types        # tipos que espelham os DTOs da API
+└── utils        # formatação em pt-BR, datas e validação
 ```
 
 Código da API, dentro de `back/macropulse`:
@@ -247,8 +307,20 @@ src/main/java/io/github/vinisl2510/macropulse
 - [x] Simulador de investimentos
 - [x] Testes automatizados
 - [x] Swagger e Docker
-- [ ] Front-end (cards, gráficos e tela do simulador)
+- [x] Monorepo e front-end (painel, gráficos, simulador e páginas de apoio)
+- [x] Site no Docker com Nginx
+- [ ] Envio das sugestões por e-mail
 - [ ] Deploy
+
+---
+
+## 📖 Documentação
+
+Escrita em português, de forma didática:
+
+- [docs/MONOREPO.md](docs/MONOREPO.md): o que é monorepo e como o projeto foi migrado, preservando o histórico.
+- [docs/FRONT.md](docs/FRONT.md): estrutura do site, páginas, tema, proxy do Vite e CORS.
+- [docs/DOCKER.md](docs/DOCKER.md): os 3 containers, o `Dockerfile` e o `nginx.conf` linha a linha.
 
 ---
 
@@ -257,7 +329,7 @@ src/main/java/io/github/vinisl2510/macropulse
 Feito por Vinicius Soares Loureiro como projeto de portfólio para vagas de backend no mercado financeiro.
 
 - GitHub: [@vinisl2510-sudo](https://github.com/vinisl2510-sudo)
-- LinkedIn: www.linkedin.com/in/vinícius-soares-loureiro-9bb96b34b
+- LinkedIn: [Vinícius Soares Loureiro](https://www.linkedin.com/in/vin%C3%ADcius-soares-loureiro-9bb96b34b)
 
 
 

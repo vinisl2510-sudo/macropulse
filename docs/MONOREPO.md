@@ -130,6 +130,14 @@ Como as duas pastas têm o mesmo nome, o volume é o mesmo.
 | Subir os containers | raiz | `docker compose up --build` |
 | Testes do back | `back/macropulse` | `./mvnw test` |
 | Rodar a API local | `back/macropulse` | `./mvnw spring-boot:run` |
+| Rodar o site local | `front` | `npm run dev` |
+
+**Java na máquina:** os testes precisam do **Java 21**. Se o `java -version` mostrar outra versão, aponte o `JAVA_HOME` para o JDK 21 antes de rodar o Maven, por exemplo no Git Bash:
+
+```bash
+export JAVA_HOME="$HOME/.jdks/ms-21.0.13.0.2"
+./mvnw test
+```
 
 **Cuidado com caminhos no Git:** eles agora começam em `back/macropulse/`. Exemplo: `git add back/macropulse/pom.xml`. Se você estiver dentro de `back/macropulse`, o caminho relativo (`git add pom.xml`) também funciona.
 

@@ -23,6 +23,8 @@ npm run dev       # site em http://localhost:5173
 | `npm run preview` | Abre localmente a versão gerada pelo build |
 | `npm run lint` | Procura problemas no código com o `oxlint`, o linter que vem no template atual do Vite |
 
+Para rodar o site completo, sem instalar o Node, use `docker compose up --build` na raiz e abra `http://localhost:3000`. Os detalhes estão em [DOCKER.md](DOCKER.md).
+
 ## Estrutura de pastas
 
 ```
@@ -38,7 +40,7 @@ front/
     ├── types/          # tipos que espelham os DTOs do Java
     ├── hooks/          # lógica reutilizável (busca de dados, tema)
     ├── components/     # peças visuais usadas em mais de um lugar
-    ├── pages/          # uma pasta de arquivo por rota
+    ├── pages/          # um arquivo por rota
     ├── utils/          # funções puras (formatação, datas)
     └── styles/         # CSS próprio, separado por assunto
 ```
