@@ -1,0 +1,92 @@
+/* Regras gerais: valem para as tags, em qualquer página. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--fonte-texto);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(1.85rem, 1.4rem + 2vw, 2.75rem);
+}
+
+h2 {
+  font-size: clamp(1.35rem, 1.2rem + 0.8vw, 1.75rem);
+}
+
+h3 {
+  font-size: 1.05rem;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--cor-destaque);
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  color: var(--cor-destaque-forte);
+}
+
+code {
+  font-family: var(--fonte-codigo);
+  font-size: 0.9em;
+}
+
+/* Contorno visível para quem navega pelo teclado */
+:focus-visible {
+  outline: 2px solid var(--cor-destaque);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Respeita quem pediu menos movimento nas configurações do sistema */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
