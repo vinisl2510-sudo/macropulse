@@ -100,6 +100,40 @@
   box-shadow: var(--sombra);
 }
 
+/* ===== Topo das páginas e seções ===== */
+
+.topo-pagina {
+  max-width: 44rem;
+  margin-bottom: var(--espaco-6);
+}
+
+.topo-pagina p {
+  margin-top: var(--espaco-3);
+  color: var(--cor-texto-suave);
+  font-size: 1.0625rem;
+}
+
+.secao {
+  margin-top: var(--espaco-8);
+}
+
+.secao__topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espaco-4);
+}
+
+.secao__intro {
+  margin-top: var(--espaco-2);
+  color: var(--cor-texto-suave);
+}
+
+.secao__subtitulo {
+  margin-top: var(--espaco-6);
+}
+
 /* ===== Estados: carregando, erro e vazio ===== */
 
 .estado {

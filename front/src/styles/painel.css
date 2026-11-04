@@ -1,0 +1,318 @@
+/* Página principal: cards de indicadores, gráficos e seção sobre a API. */
+
+/* ===== Cards de indicadores ===== */
+
+/* auto-fit: a quantidade de colunas se ajusta à largura; no celular, os cards empilham */
+.grade-indicadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: var(--espaco-4);
+}
+
+.indicador {
+  display: flex;
+  flex-direction: column;
+  padding: var(--espaco-5);
+}
+
+.indicador__descricao {
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+}
+
+.indicador__valor {
+  margin-top: var(--espaco-4);
+  font-size: 2.25rem;
+  font-weight: 650;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.indicador__referencia {
+  margin-top: var(--espaco-1);
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+}
+
+.indicador__nota {
+  margin-top: var(--espaco-2);
+  color: var(--cor-texto-suave);
+  font-size: 0.8125rem;
+}
+
+.tendencia {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--espaco-2);
+  margin-top: var(--espaco-3);
+  padding: 0.125rem var(--espaco-2);
+  border-radius: var(--raio);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.tendencia__seta {
+  width: 0.7rem;
+  height: 0.7rem;
+  fill: currentColor;
+}
+
+.tendencia--alta {
+  background: var(--cor-alta-fundo);
+  color: var(--cor-alta);
+}
+
+.tendencia--queda {
+  background: var(--cor-queda-fundo);
+  color: var(--cor-queda);
+}
+
+.tendencia--estavel {
+  background: var(--cor-superficie-2);
+  color: var(--cor-texto-suave);
+}
+
+/* ===== Seletor de período ===== */
+
+.seletor-periodo {
+  display: inline-flex;
+  gap: var(--espaco-1);
+  margin-top: var(--espaco-4);
+  padding: var(--espaco-1);
+  background: var(--cor-superficie-2);
+  border-radius: var(--raio);
+}
+
+.seletor-periodo button {
+  min-width: 3rem;
+  min-height: 2.25rem;
+  padding: 0 var(--espaco-3);
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--raio) - 2px);
+  color: var(--cor-texto-suave);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.seletor-periodo button:hover {
+  color: var(--cor-texto);
+}
+
+.seletor-periodo button[aria-pressed='true'] {
+  background: var(--cor-superficie);
+  color: var(--cor-destaque-forte);
+  box-shadow: var(--sombra);
+}
+
+/* ===== Gráficos ===== */
+
+/*
+  minmax(0, 1fr) é essencial: sem o 0, a coluna não encolhe abaixo da largura do
+  canvas e o gráfico não acompanha a redução da janela.
+*/
+.grade-graficos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--espaco-4);
+  margin-top: var(--espaco-4);
+}
+
+.cartao-grafico {
+  min-width: 0;
+  padding: var(--espaco-5);
+}
+
+.cartao-grafico__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--espaco-4);
+  margin-bottom: var(--espaco-4);
+}
+
+.cartao-grafico__subtitulo,
+.cartao-grafico__nota {
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+}
+
+.cartao-grafico__nota {
+  margin-top: var(--espaco-3);
+}
+
+.cartao-grafico__ultimo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.cartao-grafico__ultimo strong {
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+
+.cartao-grafico__ultimo span {
+  color: var(--cor-texto-suave);
+  font-size: 0.8125rem;
+}
+
+/* O canvas do Chart.js precisa de um pai com posição e altura definidas */
+.grafico {
+  position: relative;
+  height: 16.5rem;
+}
+
+.grafico > .estado {
+  height: 100%;
+}
+
+.esmaecido {
+  opacity: 0.45;
+  transition: opacity 0.15s;
+}
+
+.tabela-dados {
+  margin-top: var(--espaco-3);
+  font-size: 0.875rem;
+}
+
+.tabela-dados summary {
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.tabela-dados__rolagem {
+  max-height: 14rem;
+  margin-top: var(--espaco-2);
+  overflow-y: auto;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+}
+
+.tabela-dados table,
+.tabela-endpoints table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela-dados th,
+.tabela-dados td,
+.tabela-endpoints th,
+.tabela-endpoints td {
+  padding: var(--espaco-2) var(--espaco-3);
+  border-bottom: 1px solid var(--cor-borda);
+  text-align: left;
+}
+
+.tabela-dados tbody tr:last-child td,
+.tabela-endpoints tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.tabela-dados th {
+  position: sticky;
+  top: 0;
+  background: var(--cor-superficie);
+}
+
+/* Números alinhados em coluna */
+.tabela-dados td:last-child,
+.tabela-dados th:last-child {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ===== O que a API faz ===== */
+
+.grade-funcionalidades {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: var(--espaco-5) var(--espaco-6);
+  margin: var(--espaco-5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grade-funcionalidades li {
+  padding-top: var(--espaco-3);
+  border-top: 2px solid var(--cor-borda);
+}
+
+.grade-funcionalidades p {
+  margin-top: var(--espaco-1);
+  color: var(--cor-texto-suave);
+  font-size: 0.9375rem;
+}
+
+.tabela-endpoints {
+  margin-top: var(--espaco-3);
+  overflow-x: auto;
+  font-size: 0.9375rem;
+}
+
+.tabela-endpoints th {
+  color: var(--cor-texto-suave);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.tabela-endpoints code {
+  overflow-wrap: anywhere;
+}
+
+.metodo {
+  display: inline-block;
+  min-width: 3.25rem;
+  padding: 0.05rem var(--espaco-2);
+  border-radius: 0.25rem;
+  font-family: var(--fonte-codigo);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.metodo--get {
+  background: var(--cor-destaque-fundo);
+  color: var(--cor-destaque-forte);
+}
+
+.metodo--post {
+  background: var(--cor-aviso-fundo);
+  color: var(--cor-aviso);
+}
+
+/* ===== Celular ===== */
+
+@media (max-width: 54rem) {
+  .grade-graficos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .grafico {
+    height: 14.5rem;
+  }
+}
+
+@media (max-width: 36rem) {
+  .indicador,
+  .cartao-grafico {
+    padding: var(--espaco-4);
+  }
+
+  .seletor-periodo {
+    display: flex;
+  }
+
+  .seletor-periodo button {
+    flex: 1;
+  }
+
+  /* No celular, a descrição sai da tabela: a rota já diz o essencial */
+  .tabela-endpoints th:last-child,
+  .tabela-endpoints td:last-child {
+    display: none;
+  }
+}
