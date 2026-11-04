@@ -1,0 +1,170 @@
+/* Moldura do site: container, cabeçalho, menu do celular e rodapé. */
+
+.container {
+  width: 100%;
+  max-width: var(--largura-maxima);
+  margin-inline: auto;
+  padding-inline: var(--espaco-4);
+}
+
+.conteudo {
+  flex: 1;
+  padding-block: var(--espaco-6) var(--espaco-8);
+}
+
+.pular-conteudo {
+  position: absolute;
+  top: -100px;
+  left: var(--espaco-4);
+  z-index: 30;
+  padding: var(--espaco-2) var(--espaco-4);
+  border-radius: var(--raio);
+  background: var(--cor-destaque);
+  color: var(--cor-sobre-destaque);
+}
+
+.pular-conteudo:focus {
+  top: var(--espaco-2);
+  color: var(--cor-sobre-destaque);
+}
+
+/* ===== Cabeçalho ===== */
+
+.cabecalho {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--cor-superficie);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.cabecalho__barra {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-5);
+  min-height: 3.75rem;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  color: var(--cor-texto);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.logo:hover {
+  color: var(--cor-texto);
+}
+
+.logo svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  fill: none;
+  stroke: var(--cor-destaque);
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cabecalho__menu {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-4);
+}
+
+.navegacao {
+  display: flex;
+  gap: var(--espaco-1);
+}
+
+.navegacao a {
+  padding: var(--espaco-2) var(--espaco-3);
+  border-radius: var(--raio);
+  color: var(--cor-texto-suave);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.navegacao a:hover {
+  background: var(--cor-superficie-2);
+  color: var(--cor-texto);
+}
+
+/* O NavLink coloca a classe "active" sozinho no link da página atual */
+.navegacao a.active {
+  background: var(--cor-destaque-fundo);
+  color: var(--cor-destaque-forte);
+}
+
+.cabecalho__acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-2);
+}
+
+/* Duas classes no seletor para vencer o display de .botao-icone, que vem depois */
+.botao-icone.cabecalho__hamburguer {
+  display: none;
+}
+
+/* ===== Celular e tablet: o menu vira um painel aberto pelo botão hambúrguer ===== */
+
+@media (max-width: 54rem) {
+  .cabecalho__barra {
+    justify-content: space-between;
+  }
+
+  .botao-icone.cabecalho__hamburguer {
+    display: inline-flex;
+  }
+
+  .cabecalho__menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--espaco-3) var(--espaco-4) var(--espaco-4);
+    background: var(--cor-superficie);
+    border-bottom: 1px solid var(--cor-borda);
+    box-shadow: var(--sombra);
+  }
+
+  .cabecalho__menu--aberto {
+    display: flex;
+  }
+
+  .navegacao {
+    flex-direction: column;
+  }
+
+  .navegacao a {
+    padding: var(--espaco-3);
+  }
+}
+
+/* ===== Rodapé ===== */
+
+.rodape {
+  background: var(--cor-superficie);
+  border-top: 1px solid var(--cor-borda);
+  color: var(--cor-texto-suave);
+  font-size: 0.9rem;
+}
+
+.rodape__conteudo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-2) var(--espaco-5);
+  padding-block: var(--espaco-5);
+}
