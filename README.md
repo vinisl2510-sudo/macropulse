@@ -95,7 +95,8 @@ Sobem dois containers: `macropulse-db` (PostgreSQL) e `macropulse-api`. A API s�
 Pré-requisitos: **Java 21** e **Docker**.
 
 ```bash
-docker compose up -d db
+docker compose up -d db        # na raiz do repositório
+cd back/macropulse
 ./mvnw spring-boot:run
 ```
 
@@ -191,6 +192,8 @@ Todos os cálculos usam `BigDecimal` com arredondamento `HALF_UP`.
 ## 🧪 Testes
 
 ```bash
+docker compose up -d db        # na raiz do repositório
+cd back/macropulse
 ./mvnw test
 ```
 
@@ -205,6 +208,19 @@ Nos testes, a atualização automática na inicialização é desligada (`macrop
 ---
 
 ## 📁 Estrutura
+
+O repositório é um **monorepo**: backend e front-end ficam juntos, cada um na sua pasta (veja [docs/MONOREPO.md](docs/MONOREPO.md)).
+
+```
+macropulse/
+├── docker-compose.yml     # sobe o banco e a API
+├── README.md
+├── docs/                  # documentação didática
+├── front/                 # front-end
+└── back/macropulse/       # API Java (src, pom.xml, mvnw, Dockerfile)
+```
+
+Código da API, dentro de `back/macropulse`:
 
 ```
 src/main/java/io/github/vinisl2510/macropulse
