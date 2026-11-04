@@ -49,9 +49,9 @@ front/
 - **`api/`**: as telas nunca chamam `fetch` diretamente. `cliente.ts` centraliza a chamada e o tratamento de erros, enquanto `indicadores.ts` e `simulador.ts` têm uma função por endpoint.
 - **`hooks/`**: `useDados` cuida de buscar, cancelar e informar o estado. `useTema` dá acesso ao tema.
 - **`components/`**: cabeçalho, rodapé, botões e os estados de carregando, erro e vazio.
-- **`pages/`**: `Painel`, `Simulador`, `Sobre` e `Sugestoes`.
-- **`utils/`**: `formatacao.ts` converte números e datas para o padrão brasileiro.
-- **`styles/`**: `variaveis.css` (cores e medidas), `base.css` (tags), `layout.css` (moldura) e `componentes.css` (peças).
+- **`pages/`**: `Painel`, `Simulador`, `Sobre`, `Sugestoes` e `NaoEncontrada` (404).
+- **`utils/`**: `formatacao.ts` (padrão brasileiro), `datas.ts` (intervalos de período), `tendencia.ts` (setas de alta e queda) e `validacaoSimulador.ts`.
+- **`styles/`**: `variaveis.css` (cores e medidas), `base.css` (tags), `layout.css` (moldura), `componentes.css` (peças), `formulario.css` (campos) e um arquivo por página: `painel.css`, `simulador.css` e `paginas.css`.
 
 ## O que é CORS e por que o proxy evita o problema
 
@@ -160,6 +160,22 @@ Formulário ──> validação no front ──> API ──> 3 resultados ──
 - **Melhor valor líquido:** recebe borda e um selo escrito, calculados só entre os investimentos marcados. Com um único marcado, não há selo, pois não há comparação.
 - **Gráfico de barras deitadas:** os nomes ficam legíveis no celular. O eixo começa em zero, então as barras parecem próximas quando os valores são próximos, e essa é a leitura honesta. Os valores exatos estão nos cards.
 - **Legenda em HTML:** com duas séries (líquido e bruto), a cor nunca fica sem nome.
+
+### Sobre (`/sobre`)
+
+Página estática, sem chamadas à API: objetivo, diagrama de arquitetura, stack, fontes de dados, decisões técnicas, roadmap e autor.
+
+O diagrama é uma **lista ordenada em HTML**, e as setas são desenhadas com CSS. Isso facilita a edição, acompanha o tema automaticamente e é lido na ordem certa por leitores de tela. No celular, ele passa a descer na vertical.
+
+O link do LinkedIn usa a forma codificada do acento (`vin%C3%ADcius`), que funciona em qualquer navegador. Foi conferido abrindo o perfil no navegador, porque o LinkedIn bloqueia testes automáticos com o código 999.
+
+### Sugestões (`/sugestoes`)
+
+Formulário com nome, e-mail e mensagem, com o **envio desativado** e o aviso de que a funcionalidade virá em uma próxima versão. Não há backend para isso ainda, e nada sai do navegador.
+
+### Página 404
+
+A rota `*` captura qualquer endereço que não exista e mostra uma página com link de volta ao Painel, mantendo cabeçalho e rodapé.
 
 ### Cores dos gráficos nos dois temas
 
