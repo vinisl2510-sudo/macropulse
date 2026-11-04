@@ -146,6 +146,21 @@ Dois cuidados importantes:
 
 **Seção "O que a API faz"** (`SecaoApi.tsx`): lista funcionalidades e endpoints, com o botão para o Swagger.
 
+### Simulador (`/simulador`)
+
+Consome só o `POST /api/simulador`, e só quando a pessoa clica em **Simular**.
+
+```
+Formulário ──> validação no front ──> API ──> 3 resultados ──> filtro dos checkboxes ──> cards e gráfico
+```
+
+- **Filtro só no front:** a API sempre devolve CDB, Tesouro Selic e Poupança. Marcar ou desmarcar um checkbox não faz nova chamada. Como o nome do CDB muda ("CDB 110% do CDI"), cada resultado é identificado pela **posição** na lista, que é sempre a mesma.
+- **Validação em duas camadas:** o front avisa na hora, junto de cada campo; a API continua validando, porque nunca se deve confiar só no navegador. Se ela devolver 400, o `detail` aparece na tela com os nomes dos campos traduzidos (`prazoDias` vira "Prazo").
+- **Limites só no front:** a API aceita qualquer número positivo, e valores absurdos geram resultados com dezenas de dígitos. O front limita a R$ 1 bilhão, 50 anos e 500% do CDI. Também exige prazo inteiro, porque a API truncaria 1,5 para 1 sem avisar.
+- **Melhor valor líquido:** recebe borda e um selo escrito, calculados só entre os investimentos marcados. Com um único marcado, não há selo, pois não há comparação.
+- **Gráfico de barras deitadas:** os nomes ficam legíveis no celular. O eixo começa em zero, então as barras parecem próximas quando os valores são próximos, e essa é a leitura honesta. Os valores exatos estão nos cards.
+- **Legenda em HTML:** com duas séries (líquido e bruto), a cor nunca fica sem nome.
+
 ### Cores dos gráficos nos dois temas
 
 O canvas do Chart.js não entende variáveis CSS. O hook `useCoresGrafico` lê os valores do CSS e é refeito quando o tema muda, redesenhando os gráficos. Por isso, `ProvedorTema` muda o atributo `data-tema` **antes** de atualizar o estado do React: quando o gráfico renderiza, as cores novas já estão valendo.
@@ -199,6 +214,7 @@ O visual usa **CSS próprio**, sem Tailwind nem bibliotecas de componentes, para
 - **`<a>` comum para o Swagger:** ele não é uma página do React, quem responde é a API Java.
 - **`<title>` dentro das páginas:** o React 19 leva a tag para o `<head>`, sem biblioteca extra.
 - **`createBrowserRouter`:** permite usar o `ScrollRestoration`, que volta ao topo ao trocar de página e restaura a posição ao usar "voltar".
+- **Páginas com `lazy`:** cada página vira um arquivo separado, baixado só quando alguém a abre. O Chart.js, por exemplo, só é baixado pelas páginas com gráfico.
 
 ## Problemas encontrados e como foram resolvidos
 
@@ -206,5 +222,6 @@ O visual usa **CSS próprio**, sem Tailwind nem bibliotecas de componentes, para
 - **"A API respondeu em um formato inesperado" em todos os cards:** o servidor do Vite estava ligado durante uma troca de branch. A pasta `front/` sumiu por um instante, e o processo continuou rodando sem a configuração do proxy, devolvendo o HTML do site no lugar do JSON. Salvar o `vite.config.ts` de novo não resolveu, porque o processo também parou de perceber as mudanças. **Solução: parar com `Ctrl+C` e rodar `npm run dev` de novo.** Para evitar, pare o servidor antes de trocar para uma branch sem a pasta `front/`.
 - **Área pintada enganosa nos gráficos de linha:** com o eixo começando em R$ 4,50, a área sugeria uma grandeza que não existe. Solução: deixar só a linha.
 - **Gráfico que não encolhia com a janela:** a coluna do CSS Grid não fica menor que o conteúdo por padrão. Solução: usar `minmax(0, 1fr)` nas colunas.
+- **Aviso de arquivo maior que 500 kB no build:** o Chart.js estava no arquivo principal. Solução: carregar as páginas com `lazy`, separando o código.
 - **Porta 5173 ocupada:** outro projeto pode estar usando a porta. O Vite escolhe a próxima livre e mostra o endereço no terminal; o proxy continua funcionando normalmente.
 - **`node_modules` dentro do OneDrive:** a pasta tem milhares de arquivos e deixa a sincronização lenta. Ela não vai para o Git, mas o OneDrive tenta sincronizá-la. Se atrapalhar, pause a sincronização enquanto trabalha ou mantenha o projeto fora do OneDrive.
