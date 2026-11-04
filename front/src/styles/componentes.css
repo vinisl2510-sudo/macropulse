@@ -100,6 +100,24 @@
   box-shadow: var(--sombra);
 }
 
+/* ===== Área de gráfico =====
+   O canvas do Chart.js precisa de um pai com posição e altura definidas */
+
+.grafico {
+  position: relative;
+  height: 16.5rem;
+}
+
+.grafico > .estado {
+  height: 100%;
+}
+
+@media (max-width: 54rem) {
+  .grafico {
+    height: 14.5rem;
+  }
+}
+
 /* ===== Topo das páginas e seções ===== */
 
 .topo-pagina {
