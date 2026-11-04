@@ -159,16 +159,6 @@
   font-size: 0.8125rem;
 }
 
-/* O canvas do Chart.js precisa de um pai com posição e altura definidas */
-.grafico {
-  position: relative;
-  height: 16.5rem;
-}
-
-.grafico > .estado {
-  height: 100%;
-}
-
 .esmaecido {
   opacity: 0.45;
   transition: opacity 0.15s;
@@ -289,10 +279,6 @@
 @media (max-width: 54rem) {
   .grade-graficos {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .grafico {
-    height: 14.5rem;
   }
 }
 
