@@ -1,0 +1,259 @@
+/* Páginas Sobre, Sugestões e 404. */
+
+.secao-sobre {
+  margin-top: var(--espaco-7);
+}
+
+.grade-sobre {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: var(--espaco-5) var(--espaco-6);
+  margin-top: var(--espaco-4);
+}
+
+.grade-sobre > div {
+  padding-top: var(--espaco-3);
+  border-top: 2px solid var(--cor-borda);
+}
+
+.grade-sobre p,
+.lista-simples {
+  margin-top: var(--espaco-1);
+  color: var(--cor-texto-suave);
+  font-size: 0.9375rem;
+}
+
+.lista-simples {
+  padding: 0;
+  list-style: none;
+}
+
+.lista-pontos {
+  margin: var(--espaco-4) 0 0;
+  padding-left: 1.15rem;
+  color: var(--cor-texto-suave);
+}
+
+.lista-pontos li + li {
+  margin-top: var(--espaco-1);
+}
+
+.lista-pontos strong {
+  color: var(--cor-texto);
+}
+
+/* ===== Diagrama de arquitetura ===== */
+
+/* Uma lista ordenada: a ordem é o próprio fluxo, e as setas são desenhadas com CSS */
+.diagrama {
+  display: flex;
+  align-items: stretch;
+  gap: var(--espaco-6);
+  margin: var(--espaco-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.diagrama > li {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Seta entre uma etapa e a próxima */
+.diagrama > li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: calc(var(--espaco-6) * -1);
+  width: var(--espaco-6);
+  height: 0.875rem;
+  transform: translateY(-50%);
+  background: var(--cor-texto-suave);
+  clip-path: polygon(0 45%, 70% 45%, 70% 0, 100% 50%, 70% 100%, 70% 55%, 0 55%);
+}
+
+.diagrama__caixa {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--espaco-1);
+  padding: var(--espaco-4);
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+}
+
+.diagrama__caixa span {
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+.diagrama__caixa--destaque {
+  background: var(--cor-destaque-fundo);
+  border-color: var(--cor-destaque);
+}
+
+.diagrama__caixa--destaque span {
+  color: var(--cor-texto);
+}
+
+.diagrama__ramos ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--espaco-3);
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ===== Tabela de fontes ===== */
+
+.tabela-rolavel {
+  margin-top: var(--espaco-4);
+  overflow-x: auto;
+  font-size: 0.9375rem;
+}
+
+.tabela-rolavel table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela-rolavel th,
+.tabela-rolavel td {
+  padding: var(--espaco-2) var(--espaco-3);
+  border-bottom: 1px solid var(--cor-borda);
+  text-align: left;
+}
+
+.tabela-rolavel th {
+  color: var(--cor-texto-suave);
+  font-size: 0.8125rem;
+}
+
+.tabela-rolavel tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.tabela-rolavel code {
+  overflow-wrap: anywhere;
+}
+
+/* ===== Roadmap ===== */
+
+.roadmap {
+  margin: var(--espaco-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roadmap li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--espaco-3);
+  padding-block: var(--espaco-2);
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.roadmap__marca {
+  flex: none;
+  min-width: 5rem;
+  padding: 0 var(--espaco-2);
+  background: var(--cor-aviso-fundo);
+  border-radius: 0.25rem;
+  color: var(--cor-aviso);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.roadmap__item--feito .roadmap__marca {
+  background: var(--cor-alta-fundo);
+  color: var(--cor-alta);
+}
+
+/* ===== Autor ===== */
+
+.autor__nome {
+  margin-top: var(--espaco-2);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.autor__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-2);
+  margin-top: var(--espaco-3);
+}
+
+/* ===== Sugestões ===== */
+
+.sugestoes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-4);
+  max-width: 38rem;
+}
+
+.aviso {
+  padding: var(--espaco-3) var(--espaco-4);
+  background: var(--cor-aviso-fundo);
+  border-radius: var(--raio);
+  color: var(--cor-aviso);
+  font-weight: 500;
+}
+
+/* ===== 404 ===== */
+
+.nao-encontrada {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--espaco-3);
+  padding-block: var(--espaco-8);
+  text-align: center;
+}
+
+.nao-encontrada__codigo {
+  color: var(--cor-destaque);
+  font-size: clamp(3.5rem, 2rem + 8vw, 6rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.nao-encontrada > p:not(.nao-encontrada__codigo) {
+  color: var(--cor-texto-suave);
+}
+
+/* ===== Celular: o diagrama passa a descer, com setas para baixo ===== */
+
+@media (max-width: 54rem) {
+  .diagrama {
+    flex-direction: column;
+    gap: var(--espaco-6);
+  }
+
+  .diagrama > li:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    bottom: calc(var(--espaco-6) * -1);
+    left: 50%;
+    width: 0.875rem;
+    height: var(--espaco-6);
+    transform: translateX(-50%);
+    clip-path: polygon(45% 0, 55% 0, 55% 70%, 100% 70%, 50% 100%, 0 70%, 45% 70%);
+  }
+}
+
+@media (max-width: 36rem) {
+  .roadmap li {
+    flex-direction: column;
+    gap: var(--espaco-1);
+  }
+}
