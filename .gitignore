@@ -1,0 +1,21 @@
+# Front-end (Node e Vite)
+node_modules/
+dist/
+.vite/
+*.local
+npm-debug.log*
+
+# Segredos e configurações locais
+.env
+.env.*
+!.env.example
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Sistema operacional
+Thumbs.db
+desktop.ini
+.DS_Store
