@@ -48,6 +48,13 @@
   --cor-aviso: #7a4b00;
   --cor-aviso-fundo: #fbf0d9;
 
+  /* Gráficos: combinação validada contra daltonismo e contraste sobre a superfície */
+  --grafico-serie-1: #1d5fd8;
+  --grafico-serie-1-forte: #164aa8;
+  --grafico-serie-2: #c2700a;
+  --grafico-serie-2-forte: #9a5907;
+  --grafico-grade: #e6e9ee;
+
   --sombra: 0 1px 2px rgb(20 26 36 / 6%), 0 4px 14px rgb(20 26 36 / 5%);
 }
 
@@ -73,6 +80,13 @@
   --cor-queda-fundo: #3d1b1c;
   --cor-aviso: #f2c76e;
   --cor-aviso-fundo: #392c10;
+
+  /* Tons escolhidos e validados para este fundo: não é uma simples inversão do tema claro */
+  --grafico-serie-1: #558aec;
+  --grafico-serie-1-forte: #7ba6f5;
+  --grafico-serie-2: #c08020;
+  --grafico-serie-2-forte: #d89a3c;
+  --grafico-grade: #262d3a;
 
   --sombra: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 14px rgb(0 0 0 / 20%);
 }

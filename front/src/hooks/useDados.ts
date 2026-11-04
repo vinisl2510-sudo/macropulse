@@ -6,16 +6,23 @@ type Resultado<T> =
   | { chave: string; dados?: undefined; erro: ErroApi }
 
 export type EstadoDados<T> =
-  | { status: 'carregando'; dados?: undefined; erro?: undefined; tentarNovamente: () => void }
-  | { status: 'erro'; dados?: undefined; erro: ErroApi; tentarNovamente: () => void }
-  | { status: 'sucesso'; dados: T; erro?: undefined; tentarNovamente: () => void }
+  | {
+      status: 'carregando'
+      dados?: undefined
+      erro?: undefined
+      /** Último resultado de outra chave, para a tela não piscar ao trocar de filtro. */
+      dadosAnteriores?: T
+      tentarNovamente: () => void
+    }
+  | { status: 'erro'; dados?: undefined; erro: ErroApi; dadosAnteriores?: undefined; tentarNovamente: () => void }
+  | { status: 'sucesso'; dados: T; erro?: undefined; dadosAnteriores?: undefined; tentarNovamente: () => void }
 
 /**
  * Busca dados quando a tela aparece e sempre que `chave` muda.
  *
  * O estado "carregando" não é guardado: é calculado. Se o último resultado é de
- * outra chave, ainda estamos esperando. Isso evita mostrar por um instante os
- * dados do período anterior depois de trocar o filtro.
+ * outra chave, ainda estamos esperando. Os dados antigos só são entregues em
+ * `dadosAnteriores`, para quem quiser mostrá-los esmaecidos durante a espera.
  */
 export function useDados<T>(
   buscar: (signal: AbortSignal) => Promise<T>,
@@ -46,7 +53,7 @@ export function useDados<T>(
   const tentarNovamente = () => setTentativa((atual) => atual + 1)
 
   if (resultado?.chave !== chaveCompleta) {
-    return { status: 'carregando', tentarNovamente }
+    return { status: 'carregando', dadosAnteriores: resultado?.dados, tentarNovamente }
   }
   if (resultado.erro) {
     return { status: 'erro', erro: resultado.erro, tentarNovamente }

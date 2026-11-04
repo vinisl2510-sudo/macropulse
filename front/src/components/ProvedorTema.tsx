@@ -25,19 +25,30 @@ function temaDoSistema(): Tema {
   return matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro'
 }
 
-export function ProvedorTema({ children }: { children: ReactNode }) {
-  const [tema, setTema] = useState<Tema>(() => lerEscolhaSalva() ?? temaDoSistema())
+/**
+ * O CSS troca as cores pelo atributo data-tema da tag <html>. O atributo muda
+ * ANTES do estado do React: os gráficos leem as cores do CSS ao renderizar e
+ * precisam já encontrar os valores do tema novo.
+ */
+function aplicarNoHtml(tema: Tema) {
+  document.documentElement.dataset.tema = tema
+}
 
-  // O CSS troca as cores pelo atributo data-tema da tag <html>
-  useEffect(() => {
-    document.documentElement.dataset.tema = tema
-  }, [tema])
+export function ProvedorTema({ children }: { children: ReactNode }) {
+  const [tema, setTema] = useState<Tema>(() => {
+    const inicial = lerEscolhaSalva() ?? temaDoSistema()
+    aplicarNoHtml(inicial)
+    return inicial
+  })
 
   // Enquanto a pessoa não escolher um tema, acompanha as mudanças do sistema
   useEffect(() => {
     const preferencia = matchMedia('(prefers-color-scheme: dark)')
     const aoMudar = () => {
-      if (lerEscolhaSalva() === null) setTema(temaDoSistema())
+      if (lerEscolhaSalva() !== null) return
+      const novo = temaDoSistema()
+      aplicarNoHtml(novo)
+      setTema(novo)
     }
     preferencia.addEventListener('change', aoMudar)
     return () => preferencia.removeEventListener('change', aoMudar)
@@ -49,6 +60,7 @@ export function ProvedorTema({ children }: { children: ReactNode }) {
       alternarTema: () => {
         const novo: Tema = tema === 'escuro' ? 'claro' : 'escuro'
         salvarEscolha(novo)
+        aplicarNoHtml(novo)
         setTema(novo)
       },
     }),
