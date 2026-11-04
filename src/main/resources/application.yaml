@@ -5,7 +5,7 @@ spring:
   application:
     name: macropulse
   datasource:
-    url: jdbc:postgresql://localhost:5433/macropulse
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/macropulse}
     username: ${DB_USER:macropulse}
     password: ${DB_PASSWORD:macropulse}
   jpa:
@@ -14,6 +14,7 @@ spring:
     show-sql: false
   flyway:
     enabled: true
+
   macropulse:
     atualizacao:
       na-inicializacao: true
