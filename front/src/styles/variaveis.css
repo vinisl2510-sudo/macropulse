@@ -1,0 +1,78 @@
+/*
+  Todas as cores e medidas do site ficam aqui, como variáveis CSS.
+  Para mudar o visual, comece por este arquivo. Trocar o tema é só trocar
+  os valores: o atributo data-tema da tag <html> decide qual bloco vale.
+*/
+
+:root {
+  /* Medidas (iguais nos dois temas) */
+  --espaco-1: 0.25rem;
+  --espaco-2: 0.5rem;
+  --espaco-3: 0.75rem;
+  --espaco-4: 1rem;
+  --espaco-5: 1.5rem;
+  --espaco-6: 2rem;
+  --espaco-7: 3rem;
+  --espaco-8: 4.5rem;
+
+  --raio: 0.5rem;
+  --raio-grande: 0.875rem;
+  --largura-maxima: 72rem;
+
+  --fonte-texto: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --fonte-codigo: ui-monospace, 'Cascadia Code', Consolas, 'Liberation Mono', monospace;
+}
+
+/* Tema claro */
+:root,
+:root[data-tema='claro'] {
+  color-scheme: light;
+
+  --cor-fundo: #f4f5f7;
+  --cor-superficie: #ffffff;
+  --cor-superficie-2: #eceef2;
+  --cor-borda: #d8dce3;
+  --cor-texto: #141a24;
+  --cor-texto-suave: #525c6c;
+
+  /* Azul: destaque e interação. Não se confunde com o verde e o vermelho de alta e queda. */
+  --cor-destaque: #1d4ed8;
+  --cor-destaque-forte: #1e40af;
+  --cor-destaque-fundo: #e4ebfd;
+  --cor-sobre-destaque: #ffffff;
+
+  --cor-alta: #116b34;
+  --cor-alta-fundo: #dff3e6;
+  --cor-queda: #b3211f;
+  --cor-queda-fundo: #fbe5e4;
+  --cor-aviso: #7a4b00;
+  --cor-aviso-fundo: #fbf0d9;
+
+  --sombra: 0 1px 2px rgb(20 26 36 / 6%), 0 4px 14px rgb(20 26 36 / 5%);
+}
+
+/* Tema escuro */
+:root[data-tema='escuro'] {
+  color-scheme: dark;
+
+  --cor-fundo: #0e1218;
+  --cor-superficie: #171c25;
+  --cor-superficie-2: #212835;
+  --cor-borda: #2f3745;
+  --cor-texto: #e8ecf2;
+  --cor-texto-suave: #a4aebd;
+
+  --cor-destaque: #8fb1ff;
+  --cor-destaque-forte: #b5ccff;
+  --cor-destaque-fundo: #1d2a47;
+  --cor-sobre-destaque: #0e1218;
+
+  --cor-alta: #5edb8b;
+  --cor-alta-fundo: #123222;
+  --cor-queda: #ff8f8a;
+  --cor-queda-fundo: #3d1b1c;
+  --cor-aviso: #f2c76e;
+  --cor-aviso-fundo: #392c10;
+
+  --sombra: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 14px rgb(0 0 0 / 20%);
+}
