@@ -1,0 +1,132 @@
+/* Formulários: usados no Simulador e em Sugestões. */
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-5);
+  padding: var(--espaco-5);
+}
+
+.campo label,
+.campo-grupo legend {
+  display: block;
+  margin-bottom: var(--espaco-1);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.campo__entrada {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  padding-inline: var(--espaco-3);
+  background: var(--cor-fundo);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  color: var(--cor-texto-suave);
+}
+
+.campo__entrada:focus-within {
+  outline: 2px solid var(--cor-destaque);
+  outline-offset: 1px;
+}
+
+.campo__entrada--erro {
+  border-color: var(--cor-queda);
+}
+
+.campo__entrada input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  background: transparent;
+  border: 0;
+  color: var(--cor-texto);
+  font-variant-numeric: tabular-nums;
+  outline: none;
+}
+
+.campo__entrada span {
+  white-space: nowrap;
+}
+
+.campo__dica {
+  margin-top: var(--espaco-1);
+  color: var(--cor-texto-suave);
+  font-size: 0.8125rem;
+}
+
+.campo__erro {
+  margin-top: var(--espaco-1);
+  color: var(--cor-queda);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.atalhos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-1);
+  margin-top: var(--espaco-2);
+}
+
+.atalhos button {
+  min-height: 2.25rem;
+  padding: 0 var(--espaco-3);
+  background: transparent;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.atalhos button:hover {
+  background: var(--cor-superficie-2);
+  color: var(--cor-texto);
+}
+
+.atalhos button[aria-pressed='true'] {
+  background: var(--cor-destaque-fundo);
+  border-color: var(--cor-destaque);
+  color: var(--cor-destaque-forte);
+  font-weight: 600;
+}
+
+.campo-grupo {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-2);
+  min-height: 2.25rem;
+  cursor: pointer;
+}
+
+.opcao input {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--cor-destaque);
+}
+
+.formulario__enviar {
+  width: 100%;
+  min-height: 2.875rem;
+}
+
+.campo__entrada textarea {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  padding-block: var(--espaco-3);
+  background: transparent;
+  border: 0;
+  color: var(--cor-texto);
+  outline: none;
+  resize: vertical;
+}
