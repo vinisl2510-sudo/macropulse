@@ -1,0 +1,24 @@
+# Blueprint do Render para a API Java (Spring Boot).
+# A Vercel hospeda só o site (pasta front). A API e o banco rodam fora dela.
+# Como usar: Render > New > Blueprint > escolher este repositório.
+# O banco PostgreSQL pode ser o Neon (gratuito): preencha DB_URL, DB_USER e DB_PASSWORD no painel.
+services:
+  - type: web
+    name: macropulse-api
+    runtime: docker
+    plan: free
+    region: ohio
+    dockerfilePath: ./back/macropulse/Dockerfile
+    dockerContext: ./back/macropulse
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: TZ
+        value: America/Sao_Paulo
+      - key: JAVA_TOOL_OPTIONS
+        value: -Xmx320m -XX:+UseSerialGC
+      - key: DB_URL
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
