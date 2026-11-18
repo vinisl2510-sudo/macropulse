@@ -1,13 +1,20 @@
 server:
-  port: 8081
+  # Na Vercel a porta vem da variável PORT; no computador continua 8081
+  port: ${PORT:8081}
+  # Atrás do proxy da Vercel: usa https e o domínio público nos links do Swagger
+  forward-headers-strategy: framework
 
 spring:
   application:
     name: macropulse
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5433/macropulse}
-    username: ${DB_USER:macropulse}
-    password: ${DB_PASSWORD:macropulse}
+    # Ordem: DB_* (docker-compose) > variáveis do Neon criadas pela Vercel (PG*) > banco local
+    url: ${DB_URL:jdbc:postgresql://${PGHOST_UNPOOLED:${PGHOST:localhost:5433}}/${PGDATABASE:macropulse}?sslmode=${PGSSLMODE:prefer}}
+    username: ${DB_USER:${PGUSER:macropulse}}
+    password: ${DB_PASSWORD:${PGPASSWORD:macropulse}}
+    hikari:
+      # Banco gratuito do Neon aceita poucas conexões
+      maximum-pool-size: 5
   jpa:
     hibernate:
       ddl-auto: validate
